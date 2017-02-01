@@ -1,262 +1,65 @@
 FORMAT: 1A
-HOST: dev.demo.campaigning-tools.com/tools/api/v1
+HOST: demo.cambuildr.com/api/v1
 
 # Cambuildr
 
-# Data Structure
 
-## PUBLIC_PERSON (object)
-- id: `1644` (number, required)
-- name: `Martina` (string, optional)
-- surname: `Muster` (string, optional)
-- identifier: `de361b33f0a699a37a733c10d5c4835a` (string, required)
-- customer_id: `25` (number, required)
-- updated_at: `2015-11-13 08:55:24` (string, required)
-- created_at: `2015-11-13 08:55:24` (string, required)
-- image_id (number, optional)
-- image_url (string, optional)
+## Pages [/pages]
+Pages are Objects, that are displayed in the frontend. The handle the settings of the pages and their properties.
 
-## PUBLIC_TAG (object)
-- id: `1` (number, required)
+#### Types
+Each page has a type of one of the following values:
+* `user_generated_content`
+* `commitment`
+* `voting`
+* `advocacy`
+* `grassroots`
+* `stakeholder`
+* `event`
 
-## PUBLIC_STORY (object)
-- id: `121` (number, required)
-- person_id: `237` (number, required)
-- header (string, optional)
-- text: `jklhAaron Sullivan of @Tradiv_Tweet is being introduced by the multi-head of @ShiftCannabis #CBDemo #CannaBizSummit` (string, required)
-- media_type: "NONE" (enum)
-    - NONE
-    - IMG
-    - VIDEO
-- state: `1` (enum)
-    - 0 - State for new
-    - 1 - State for released
-    - 2 - State for blocked
-- released_date: `2015-11-04 13:16:42` (string, optional)
-- created_at: `2015-06-30 01:00:04` (string, required)
-- updated_at: `2015-11-06 08:52:17` (string, optional)
-- image_url (string, optional)
-- video_url (string, optional)
-- image_id (number, optional),
-- customer_id: `1` (number, required)
-- sticky: `true` (boolean, required)
-- module_id: `1` (number, required)
-- language_id (number, optional)
-- votecount: `0` (number, optional)
-- comment_count: `2` (number, optional)
-- avg_rating (number, optional)
-- total_comment_count: `5` (number, optional)
-- width (number, optional)
-- height (number, optional)
-- name: `The Weed` (string, required)
-- surname: `B` (string, required)
-- is_visible: `true`
-- postcard (boolean, optional)
-- is_commentable: `true` (boolean, required)
-- is_postable: `true` (boolean, required)
-- is_voteable: `true` (boolean, required)
+**Please be aware, that depending on the type of each Page, the object contains different properties, as defined in the details.**
 
-- categories (object, optional)
-    - 1 (PUBLIC_STORY_CATEGORY)
+#### Visibility
+There are 2 conditions, that define if a page is visible or not:
+1. **Current date:** the date provided in the `starts_at` property is either `null` or in the past of the current date **and** the date provided in the `ends_at` property is either `null` or in the future of the current date)
+2. **Published:** The `is_published` property is set to `true`
+
+A page is visible, when bove conditions are met. To see if a page is visible, we also provide you with the `is_visible` property.
+
+
+### List all pages - MOA [GET /{?type,q}]
+
++ Parameters
+    + type: `user_generated_content` (enum[string], optional) - filter the pages by type
+        + Members
+            + `user_generated_content`
+            + `commitment`
+            + `voting`
+            + `advocacy`
+            + `stakeholder`
+            + `event`
+            + `grassroots`
+    + q: `searchy` (string, optional) - returns all pages with the value in `internal_name` or `internal_description`.
     
-- story_comments (array[PUBLIC-STORY-COMMENT], optional)
+    
++ Response 200 (application/json)
 
-- person (object, required)
-    - id: `237` (number, required)
-    - name: `"The Weed"` (string, optional)
-    - surname: `"B"` (string, optional)
-    - image_id (number, optional)
-    - image_url (string, optional)
+    + Attributes
+        + pages (array)
+            + (Page User Generated Content) - user generated content page
+            + (Page Commitment)
+            + (Page Advocacy)
+            + (Page Grassroots)
+            + (Page Stakeholder)
+            + (Page Voting)
+            + (Page Event)
+        + error: false (boolean) - did any error occur
+        + total_count: 7 (number) - the total count of found objects with this filter
+    
+        
+<!-- TODO: error responses -->
 
-- tags (array, optional)
-
-- social_media_provider_id: `3` (number, optional)
-- smsid: `21` (number, optional)
-- socialmediastory (object, optional)
-    - full_name: `The Weed Blog` (string, required)
-    - screen_name: `TheWeedBlog` (string, required)
-    - foreign_user_id: `103728265` (number, required)
-    - foreign_entry_id: `615683575325720576` (number, required)
-    - link: `http://twitter.com/TheWeedBlog/status/615683575325720576` (string, required)
-    - user_profile_picture_url: `//pbs.twimg.com/profile_images/3361225965/0d6464fae0c08cc43ce2f09c70151c4e_normal.png` (string, required)
-
-## PUBLIC_STORY_CATEGORY (object)
-- id: `3` (number, required)
-- name: "Erstellte Kategorie",
-- customer_id: `1` (number, required)
-- is_voteable: `true` (boolean, required)
-- module_id: `1` (number, required)
-- is_commentable: false (boolean, required)
-- is_visible: `true` (boolean, required)
-- is_postable: false (boolean, required)
-- is_default: false (boolean, required)
-- show_comments: `true` (boolean, required)
-- custom_data (string, optional)
-- language_id (number, optional)
-- created_at: `2015-10-21 09:05:27` (string, required)
-- updated_at: `2015-11-04 13:23:46` (string, required)
-- custom_data_decoded (object, optional)
-- pivot (object, required)
-    - story_id: `121` (number, required)
-    - category_id: `3` (number, required)
-
-## PUBLIC-STORY-COMMENT (object)
-- id: `12` (number, required)
-- module_id: `1` (number, required)
-- person_id: `1` (number, required)
-- story_id: `121` (number, required)
-- text: `Ein Kommentar im FF` (string, required)
-- rating (number, optional)
-- state: 1 (enum, required)
-    - 0
-    - 1
-    - 2
-
-- released_date: `2015-10-21 13:14:13` (string, required)
-- created_at: `2015-10-21 13:14:13` (string, required)
-- updated_at: `2015-10-21 13:14:13` (string, required)
-- vote_count: 0 (number, required)
-
-- image_id (number, optional)
-- image_url (string, optional)
-
-## PUBLIC_COMMITMENT (object)
-- id: `130` (number, required)
-- person_id: `216` (number, required)
-- message: `Beschreibung hier` (string, optional)
-- state: 1 (enum[number], required)
-    - 0
-    - 1
-    - 2
-- released_date: `2015-10-23 13:52:50` (string, required)
-- created_at: `2015-02-12 14:40:10` (string, required)
-- updated_at: `2015-10-23 13:52:50` (string, required)
-- module_id: `2` (number, required)
-- show_public: `true` (boolean, required)
-- sticky: `true` (boolean, required)
-- customer_id: `1` (number, required)
-- name: `Franz` (string, required)
-- surname: `Kaiser` (string, required)
-- image_id (number ,optional)
-- image_url (string ,optional)
-- person (object, required)
-    - id: `216` (number, required)
-    - name: `Franz` (string, optional)
-    - surname: `Kaiser` (string, optional)
-    - created_at: `2015-02-12 14:40:10` (string, required)
-    - updated_at: `2015-11-04 12:54:18` (string, required)
-    - customer_id: `1` (number, required)
-    - unsubscribed: `false` (boolean, required)
-    - gender: `M` (enum[string], optional)
-        - F
-        - M
-    - language_id: `2` (number, required)
-    - phone (string, optional)
-    - blocked: `false` (boolean, required)
-    - opt_in: `false` (boolean, required)
-    - identifier: e1490ebf180cfac3541586034dee6a53,
-    - image_id (number, optional)
-    - image_url (number, optional)
-    - addresses (array, optional)
-    - social_connectors (array, optional)
-    - tags (array, optional)
-
-## PUBLIC_EVENT (object)
-- id: `105` (number, required)
-- module_id: `4` (number, required)
-- event_category_id: `1` (number, required)
-- state: `1` (enum[number], required)
-    - 0
-    - 1
-    - 2
-- name: `Meine tolle Geburtstagsparty` (string, required)
-- description: `Ich will Geburtstag feiern, feierst du mit?` (string, optional)
-- host_user_id: `9` (number, required)
-- host_alias (string, optional)
-- host_contact: `Telefon 0664 88313666, oder: facebook.com/christian.knoflach` (string, optional)
-- starts_at: `2015-02-27 16:30:00` (string, required)
-- ends_at: `2015-02-27 14:57:00` (string, required)
-- location_name: `Campaigning Bureau` (string, optional)
-- location_directions (string, optional)
-- custom_field_label: `DUX` (string, optional)
-- rsvp_acceptance_level: `ALL` (enum[string], required)
-    - ALL
-    - REQUIRED
-    - NONE
-- invitation_level: `USER` (enum[string], required)
-    - HOST
-    - PARTICIPANT
-    - USER
-- participant_visibility_level: `ALL` (enum[string], required)
-    - ALL
-    - PARTICIPANT
-    - HOST
-- official: `false` (boolean, required)
-- cancelled: `false` (boolean, required)
-- max_friends: `10` (number, required)
-- created_at: `2015-02-27 15:12:07` (string, required)
-- updated_at: `2015-11-11 12:57:05` (string, required)
-- customer_id: `1` (number, required)
-- user_is_host: `false` (boolean, required)
-- user_is_participant: `false` (boolean, required)
-- total_participants: `0` (number, required)
-- follower_count: `0` (number, required)
-- image_id: `232` (number, optional)
-- image_url: `http://dev.demo.campaigning-tools.com/tools/api/v1/7a6238a08d2e1bbe26e5df89ef2ff62b/uploaded_images/232` (string, optional)
-
-- host_object (object, required)
-    - person (object, required)
-        - id: `226` (number, required)
-        - surname: `Knoflach` (string, required)
-        - name: `Christian` (string, required)
-        - image_url (number, optional)
-
-- addresses (array, required)
-    - (object, required)
-        - id: `110` (number, required)
-        - street: `Gölsdorfgasse 4` (string, optional)
-        - city: `Wien` (string, optional)
-        - zip_code: `1010` (string, optional)
-        - created_at: `2015-02-27 15:12:07` (string, required)
-        - updated_at: `2015-02-27 15:12:07` (string, required)
-        - lat: `48.2140829` (number, required)
-        - lng: `16.373259` (number, required)
-        - addressable_id: `105` (number, required)
-        - addressable_type: `CampaigningToolsEvent` (string, required)
-        - country (string, optional)
-
-
-- event_category (object, required)
-    - id: `1` (number, required)
-    - module_id: `4` (number, required)
-    - name: Demotools `Events Kategorie 1` (string, required)
-    - description: `Description für Kategorie 1` (string, optional)
-    - users_can_create_event: `true` (boolean, required)
-    - participant_requires_name: `false` (boolean, required)
-    - participant_requires_zip: `false` (boolean, required)
-    - participant_requires_address: `false` (boolean, required)
-    - participant_requires_phone: `false` (boolean, required)
-    - created_at: `2015-01-14 15:26:41` (string, required)
-    - updated_at: `2015-11-06 09:00:07` (string, required)
-    - image_id (number, optional)
-    - is_default: `false` (boolean, required)
-    - image_url (string, optional)
-  
-- event_capacities (array, required)
-    - (object, required)
-        - id: `200` (number, required)
-        - module_id: `4` (number, required)
-        - event_id: `105` (number, required)
-        - name: `Die Default-Kategorie, ha!` (string, required)
-        - max_people: `15` (number, required)
-        - created_at: `2015-02-27 15:12:07` (string, required)
-        - updated_at: `2015-02-27 15:12:07` (string, required)
-        - total_participants: `0` (number, required)
-        - event_rsvps (array, required)
-      
-
-
-# Group As Public
+# Group Old Stuff
 
 ## People [/{customer_identifier}/people]
 Communicate with the People-Interface
@@ -776,3 +579,364 @@ Communicate with the Stories-Interface
     + Attributes
         - error: false (boolean, required)
         - event (PUBLIC_EVENT, required)
+        
+# Data Structure
+
+## `Page Base` (object)
++ id: `1` (number) - the internal id of the page
++ identifier: `de361b33f0a699a37a733c10d5c4835a` (string) - the internal identifier of the object
++ internal_name: `Page Name` (string) - the internal name of the page used for the administration view
++ internal_description: `Page Description` (string) - the internal description of the page used for the administration view
++ type: `asdf` (enum[string], required) - the type of the page
+    + Members
+        + `user_generated_content`
+        + `commitment`
+        + `voting`
+        + `advocacy`
+        + `stakeholder`
+        + `event`
+        + `grassroots`
++ starts_at: `2015-06-30 01:00:04` (string, nullable) - defines the earliest date the page is publicly visible. if `null`, then there is no restriction for the visibility in the past (`nullable`)
++ ends_at: `2016-06-30 01:00:04` (string, nullable) - defines the latest date the page is publicly visible. if `null`, then there is no restriction for the visibility in the future (`nullable`)
++ is_published: `true` (boolean) - toggles the visibility of the page
++ is_visible: `true` (boolean) - calculated property to tell if the page is currently visible or not (see page description)
++ language_id: `1` (number) - the internal id of the language used, could also be null
++ image_id: `1` (number) - the id of the header sujet image
++ share_image_id: `2` (number) - the id of the share image in the OG-tags of the page
++ theme: `null` (string, nullable) - the theme used for this page. if `null`, then the default theme is used (`nullable`)
++ locked: `false` (boolean) - the page is locked for editing, because some magical stuff happens here
++ name: `Title` (string) - the title of the page
++ description: `Subtext of the page` (string) - the subtext of the page
++ embedded_in: `https://demo.cambuildr.com/u/1` (string) - the domain, where the page can be found
++ `redirect_url_if_inactive`: `https://page-not-found.com` (string, nullable) - the domain to redirect to, if the page is not visible (`nullable`)
+
+## `Page User Generated Content` (Page Base)
++ type: `user_generated_content` (fixed) - the type of the page
++ `ugc__categories_exclusive_enabled`: true (boolean) - are the ugc categories exclusive (default: `true`)
++ `ugc__comments_moderated_enabled`: true (boolean) - are the ugc comments moderated (default: `true`)
++ `ugc__socialmedia_moderated_enabled`: true (boolean) - are the social media contents moderated (default: `true`)
++ `ugc__socialmedia_retweets_enabled`: true (boolean) - should retweets also be imported from twitter (default: `true`)
++ `ugc__placeholder_message`: `It was a bright cold day in april,...` (string) - the placeholder used for the ugc text inputfield
++ `random_order_enabled`: `false` (boolean) - should the order of the stories be randomized on the page (default: `false`)
++ `text_thank_you`: `Thank you` (string) - the thank you message to be displayed after the submit
++ `text_disclaimer`: `I am a disclaimer` (string) - the disclaimer to be print under the submit button
++ `moderation_enabled`: `true` (boolean) - should the content be moderated (default: `true`)
++ `moderation_message`: `Let us first have a look at this` (string) - the message to be displayed if the contents are moderated
++ `abbreviate_lastname`: `false` (boolean) - should the lastnames of the participants be abbreviated for privacy reasons (default: `false`)
++ `text_submit_button`: `Submit` (string) - the text for the submit button
++ `text_form_open_button`: `Typical CTA text` (string) - the text for the CTA above the form
+
+## `Page Commitment` (Page Base)
++ type: `commitment` (fixed) - the type of this page
++ `random_order_enabled`: `false` (boolean) - should the order of the stories be randomized on the page (default: `false`)
++ `zip_required`: `false` (boolean) - the zip codes need to be provided to send your commitment (default: `false`)
++ `content_share_default_image`: `6` (number, nullable) - the id of the default image for the og tags, when sharing a commitment with no image (`nullable`)
++ `content_share_default_title`: `Look, I am on Facebook` (string, nullable) - the default title for the og tags, when sharing a commitment with no message (`nullable`)
++ `self_tagging_enabled`: `false` (boolean) - the participant can tag himself after participating (default: `false`)
++ `commitment__signup_header_photo`: `Let us see your pretty face` (string) - the text to be shown as header in the photo part of the signup flow
++ `commitment__signup_header_statement`: `Whats your opinion on that` (string) - the text to be shown as header in the statement part of the signup flow
++ `commitment__signup_header_tags`: `What tags describe you` (string) - the text to be shown as header in the tags part of the signup flow
++ `text_thank_you`: `Thank you` (string) - the thank you message to be displayed after the submit
++ `text_disclaimer`: `I am a disclaimer` (string) - the disclaimer to be print under the submit button
++ `moderation_enabled`: `true` (boolean) - should the content be moderated (default: `true`)
++ `moderation_message`: `Let us first have a look at this` (string) - the message to be displayed if the contents are moderated
++ `abbreviate_lastname`: `false` (boolean) - should the lastnames of the participants be abbreviated for privacy reasons (default: `false`)
++ `text_form_open_button`: `Typical CTA text` (string) - the text for the CTA above the form
+
+## `Page Advocacy` (Page Base)
++ type: `advocacy` (fixed) - the type of this page
++ `goal_enabled`: `false` (boolean) - defines if a goal of desired participants is set (default: `false`)
++ `goal`: `100` (number, nullable) - the desired goal of participants (`nullable`, default: `null`)
++ `advocacy__email_subject`: `I am the subject` (string, nullable) - the subject of the mail to send the recipients (`nullable`)
++ `advocacy__email_body`: `It was a bright cold day in april,...` (string, nullable) - the body of the mail to send the recipients (`nullable`)
++ `advocacy__criterion_enabled`: `false` (boolean) - should a criterion be provided for the participants (default: `false`)
++ `advocacy__criterion_label`: `Criterion` (string, nullable) - the criterion to choose as participant (`nullable`, default: `null`)
++ `advocacy__recipient_text`: `Hubert Farnsworth <hubert@planet-express.com>` (string, nullable) - the list of all recipients as displayed in the administration (`nullable`)
++ `advocacy__recipient_count`: `1` (number) - the calculated number of recipients
++ `advocacy__participant_count`: `1` (number) - the calculated number of recipients
++ `optin_enabled`: `false` (boolean) - participants need to confirm an optin-mail (default: `false`)
++ `text_thank_you`: `Thank you` (string) - the thank you message to be displayed after the submit
++ `text_disclaimer`: `I am a disclaimer` (string) - the disclaimer to be print under the submit button
++ `text_submit_button`: `Submit` (string) - the text for the submit button
+
+## `Page Grassroots` (Page Base)
++ type: `grassroots` (fixed) - the type of this page
++ `text_thank_you`: `Thank you` (string) - the thank you message to be displayed after the submit
++ `text_disclaimer`: `I am a disclaimer` (string) - the disclaimer to be print under the submit button
++ `moderation_enabled`: `true` (boolean) - should the content (the grassroot campaigns, **not** the participants) be moderated (default: `true`)
++ `moderation_message`: `Let us first have a look at this` (string) - the message to be displayed if the campaigns are moderated
++ `text_submit_button`: `Submit` (string) - the text for the submit button to create a campaign
++ `grassroots__auth_code`: `random_string` (string) - provided auth key to administer a grassroot campaign as owner
++ `grassroots__commitment_page_id`: `1` (number, required) - the id of the belonging commitment page
++ `grassroots__commitment_page` (Page Commitment) - the commitment page object of the belonging commitment page
+
+## `Page Stakeholder` (Page Base)
++ type: `stakeholder` (fixed) - the type of this page
++ `stakeholder__header_actions`: `Here come the actions` (string) - the text to be shown above of the actions
++ `stakeholder__partner_image_id`: `99` (number, nullable) - the id of the partner image (`nullable`)
++ `stakeholder__cbref`: `random_string` (string) - provided internal reference to map actions to stakeholders (default: `true`)
++ `stakeholder__key`: `random_string` (string) - provided key for stakeholders to see the analytics of their page
++ `stakeholder__create_people_count`: `11` (number) - count of new people that first signed up with any action provided by this stakeholder (default: `0`)
++ `stakeholder__reached_people_count`: `22` (number) - count of people that made any action provided by this stakeholder, regardless if they are new or existing people (default: `0`)
++ `stakeholder__view_count`: `33` (number) - count of people that opened this stakeholder page (default: `0`)
+
+## `Page Voting` (Page Base)
++ type: `voting` (fixed) - the type of this page
++ `voting__question`: `To be or not to be, that is the question!` (string) - question of the voting
++ `voting_votecount`: `4711` (number) - number of all votes given on this voting
++ `voting__answercount`: `3` (number) - number of answers provided for this voting (default: `0`)
++ `text_thank_you`: `Thank you` (string) - the thank you message to be displayed after the submit
++ `text_disclaimer`: `I am a disclaimer` (string) - the disclaimer to be print under the submit button
+
+## `Page Event` (Page Base)
++ type: `event` (fixed) - the type of this page
+
+
+## `PUBLIC_PERSON` (object)
+- id: `1644` (number, required)
+- name: `Martina` (string, optional)
+- surname: `Muster` (string, optional)
+- identifier: `de361b33f0a699a37a733c10d5c4835a` (string, required)
+- customer_id: `25` (number, required)
+- updated_at: `2015-11-13 08:55:24` (string, required)
+- created_at: `2015-11-13 08:55:24` (string, required)
+- image_id (number, optional)
+- image_url (string, optional)
+
+## `PUBLIC_TAG` (object)
+- id: `1` (number, required)
+
+## `PUBLIC_STORY` (object)
+- id: `121` (number, required)
+- person_id: `237` (number, required)
+- header (string, optional)
+- text: `jklhAaron Sullivan of @Tradiv_Tweet is being introduced by the multi-head of @ShiftCannabis #CBDemo #CannaBizSummit` (string, required)
+- media_type: "NONE" (enum)
+    - NONE
+    - IMG
+    - VIDEO
+- state: `1` (enum)
+    - 0 - State for new
+    - 1 - State for released
+    - 2 - State for blocked
+- released_date: `2015-11-04 13:16:42` (string, optional)
+- created_at: `2015-06-30 01:00:04` (string, required)
+- updated_at: `2015-11-06 08:52:17` (string, optional)
+- image_url (string, optional)
+- video_url (string, optional)
+- image_id (number, optional),
+- customer_id: `1` (number, required)
+- sticky: `true` (boolean, required)
+- module_id: `1` (number, required)
+- language_id (number, optional)
+- votecount: `0` (number, optional)
+- comment_count: `2` (number, optional)
+- avg_rating (number, optional)
+- total_comment_count: `5` (number, optional)
+- width (number, optional)
+- height (number, optional)
+- name: `The Weed` (string, required)
+- surname: `B` (string, required)
+- is_visible: `true`
+- postcard (boolean, optional)
+- is_commentable: `true` (boolean, required)
+- is_postable: `true` (boolean, required)
+- is_voteable: `true` (boolean, required)
+
+- categories (object, optional)
+    - 1 (PUBLIC_STORY_CATEGORY)
+    
+- story_comments (array[PUBLIC-STORY-COMMENT], optional)
+
+- person (object, required)
+    - id: `237` (number, required)
+    - name: `"The Weed"` (string, optional)
+    - surname: `"B"` (string, optional)
+    - image_id (number, optional)
+    - image_url (string, optional)
+
+- tags (array, optional)
+
+- social_media_provider_id: `3` (number, optional)
+- smsid: `21` (number, optional)
+- socialmediastory (object, optional)
+    - full_name: `The Weed Blog` (string, required)
+    - screen_name: `TheWeedBlog` (string, required)
+    - foreign_user_id: `103728265` (number, required)
+    - foreign_entry_id: `615683575325720576` (number, required)
+    - link: `http://twitter.com/TheWeedBlog/status/615683575325720576` (string, required)
+    - user_profile_picture_url: `//pbs.twimg.com/profile_images/3361225965/0d6464fae0c08cc43ce2f09c70151c4e_normal.png` (string, required)
+
+## `PUBLIC_STORY_CATEGORY` (object)
+- id: `3` (number, required)
+- name: "Erstellte Kategorie",
+- customer_id: `1` (number, required)
+- is_voteable: `true` (boolean, required)
+- module_id: `1` (number, required)
+- is_commentable: false (boolean, required)
+- is_visible: `true` (boolean, required)
+- is_postable: false (boolean, required)
+- is_default: false (boolean, required)
+- show_comments: `true` (boolean, required)
+- custom_data (string, optional)
+- language_id (number, optional)
+- created_at: `2015-10-21 09:05:27` (string, required)
+- updated_at: `2015-11-04 13:23:46` (string, required)
+- custom_data_decoded (object, optional)
+- pivot (object, required)
+    - story_id: `121` (number, required)
+    - category_id: `3` (number, required)
+
+## `PUBLIC-STORY-COMMENT` (object)
+- id: `12` (number, required)
+- module_id: `1` (number, required)
+- person_id: `1` (number, required)
+- story_id: `121` (number, required)
+- text: `Ein Kommentar im FF` (string, required)
+- rating (number, optional)
+- state: 1 (enum, required)
+    - 0
+    - 1
+    - 2
+
+- released_date: `2015-10-21 13:14:13` (string, required)
+- created_at: `2015-10-21 13:14:13` (string, required)
+- updated_at: `2015-10-21 13:14:13` (string, required)
+- vote_count: 0 (number, required)
+
+- image_id (number, optional)
+- image_url (string, optional)
+
+## `PUBLIC_COMMITMENT` (object)
+- id: `130` (number, required)
+- person_id: `216` (number, required)
+- message: `Beschreibung hier` (string, optional)
+- state: 1 (enum[number], required)
+    - 0
+    - 1
+    - 2
+- released_date: `2015-10-23 13:52:50` (string, required)
+- created_at: `2015-02-12 14:40:10` (string, required)
+- updated_at: `2015-10-23 13:52:50` (string, required)
+- module_id: `2` (number, required)
+- show_public: `true` (boolean, required)
+- sticky: `true` (boolean, required)
+- customer_id: `1` (number, required)
+- name: `Franz` (string, required)
+- surname: `Kaiser` (string, required)
+- image_id (number ,optional)
+- image_url (string ,optional)
+- person (object, required)
+    - id: `216` (number, required)
+    - name: `Franz` (string, optional)
+    - surname: `Kaiser` (string, optional)
+    - created_at: `2015-02-12 14:40:10` (string, required)
+    - updated_at: `2015-11-04 12:54:18` (string, required)
+    - customer_id: `1` (number, required)
+    - unsubscribed: `false` (boolean, required)
+    - gender: `M` (enum[string], optional)
+        - F
+        - M
+    - language_id: `2` (number, required)
+    - phone (string, optional)
+    - blocked: `false` (boolean, required)
+    - opt_in: `false` (boolean, required)
+    - identifier: e1490ebf180cfac3541586034dee6a53,
+    - image_id (number, optional)
+    - image_url (number, optional)
+    - addresses (array, optional)
+    - social_connectors (array, optional)
+    - tags (array, optional)
+
+## `PUBLIC_EVENT` (object)
+- id: `105` (number, required)
+- module_id: `4` (number, required)
+- event_category_id: `1` (number, required)
+- state: `1` (enum[number], required)
+    - 0
+    - 1
+    - 2
+- name: `Meine tolle Geburtstagsparty` (string, required)
+- description: `Ich will Geburtstag feiern, feierst du mit?` (string, optional)
+- host_user_id: `9` (number, required)
+- host_alias (string, optional)
+- host_contact: `Telefon 0664 88313666, oder: facebook.com/christian.knoflach` (string, optional)
+- starts_at: `2015-02-27 16:30:00` (string, required)
+- ends_at: `2015-02-27 14:57:00` (string, required)
+- location_name: `Campaigning Bureau` (string, optional)
+- location_directions (string, optional)
+- custom_field_label: `DUX` (string, optional)
+- rsvp_acceptance_level: `ALL` (enum[string], required)
+    - ALL
+    - REQUIRED
+    - NONE
+- invitation_level: `USER` (enum[string], required)
+    - HOST
+    - PARTICIPANT
+    - USER
+- participant_visibility_level: `ALL` (enum[string], required)
+    - ALL
+    - PARTICIPANT
+    - HOST
+- official: `false` (boolean, required)
+- cancelled: `false` (boolean, required)
+- max_friends: `10` (number, required)
+- created_at: `2015-02-27 15:12:07` (string, required)
+- updated_at: `2015-11-11 12:57:05` (string, required)
+- customer_id: `1` (number, required)
+- user_is_host: `false` (boolean, required)
+- user_is_participant: `false` (boolean, required)
+- total_participants: `0` (number, required)
+- follower_count: `0` (number, required)
+- image_id: `232` (number, optional)
+- image_url: `http://dev.demo.campaigning-tools.com/tools/api/v1/7a6238a08d2e1bbe26e5df89ef2ff62b/uploaded_images/232` (string, optional)
+
+- host_object (object, required)
+    - person (object, required)
+        - id: `226` (number, required)
+        - surname: `Knoflach` (string, required)
+        - name: `Christian` (string, required)
+        - image_url (number, optional)
+
+- addresses (array, required)
+    - (object, required)
+        - id: `110` (number, required)
+        - street: `Gölsdorfgasse 4` (string, optional)
+        - city: `Wien` (string, optional)
+        - zip_code: `1010` (string, optional)
+        - created_at: `2015-02-27 15:12:07` (string, required)
+        - updated_at: `2015-02-27 15:12:07` (string, required)
+        - lat: `48.2140829` (number, required)
+        - lng: `16.373259` (number, required)
+        - addressable_id: `105` (number, required)
+        - addressable_type: `CampaigningToolsEvent` (string, required)
+        - country (string, optional)
+
+
+- event_category (object, required)
+    - id: `1` (number, required)
+    - module_id: `4` (number, required)
+    - name: Demotools `Events Kategorie 1` (string, required)
+    - description: `Description für Kategorie 1` (string, optional)
+    - users_can_create_event: `true` (boolean, required)
+    - participant_requires_name: `false` (boolean, required)
+    - participant_requires_zip: `false` (boolean, required)
+    - participant_requires_address: `false` (boolean, required)
+    - participant_requires_phone: `false` (boolean, required)
+    - created_at: `2015-01-14 15:26:41` (string, required)
+    - updated_at: `2015-11-06 09:00:07` (string, required)
+    - image_id (number, optional)
+    - is_default: `false` (boolean, required)
+    - image_url (string, optional)
+  
+- event_capacities (array, required)
+    - (object, required)
+        - id: `200` (number, required)
+        - module_id: `4` (number, required)
+        - event_id: `105` (number, required)
+        - name: `Die Default-Kategorie, ha!` (string, required)
+        - max_people: `15` (number, required)
+        - created_at: `2015-02-27 15:12:07` (string, required)
+        - updated_at: `2015-02-27 15:12:07` (string, required)
+        - total_participants: `0` (number, required)
+        - event_rsvps (array, required)
